@@ -1,0 +1,19 @@
+{
+	"extension": {
+		"version": "0.7.2025041600",
+		"json": 2
+	},
+	"project": {
+		"name": "ClawBotTest",
+		"description": "ClawBot Test!",
+		"creationDate": "1/13/2026, 4:34:29 PM",
+		"platform": "EXP",
+		"language": "cpp",
+		"slot": 1,
+		"sdkVersion": "EXP_20240802_15_00_00",
+		"cpp": {
+			"includePath": [],
+			"printf_float": true
+		}
+	}
+}
