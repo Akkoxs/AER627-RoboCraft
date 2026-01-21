@@ -1,0 +1,19 @@
+{
+	"extension": {
+		"version": "0.8.2026011200",
+		"json": 2
+	},
+	"project": {
+		"name": "Project1",
+		"description": "AER627 Project 1 Work - Rochelle & Kai ",
+		"creationDate": "1/20/2026, 1:03:35 PM",
+		"platform": "EXP",
+		"language": "cpp",
+		"slot": 1,
+		"sdkVersion": "EXP_20240802_15_00_00",
+		"cpp": {
+			"includePath": [],
+			"printf_float": true
+		}
+	}
+}
