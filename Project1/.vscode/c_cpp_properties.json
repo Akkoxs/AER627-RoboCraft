@@ -17,9 +17,15 @@
 		{
 			"name": "Win32",
 			"includePath": [
-				"${vex_sdkIncludes}"
+				"${vex_sdkPath}/clang/8.0.0/include",
+                "${vex_sdkPath}/gcc/include/c++/7.3.1",
+                "${vex_sdkPath}/gcc/include/c++/7.3.1/arm-none-eabi/thumb",
+                "${vex_sdkPath}/gcc/include",
+                "${vex_sdkPath}/include",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/src"
 			],
-			"compilerPath": "${vex_compilerPath}",
+            "compilerPath": "C:/msys64-x86/ucrt64/bin/g++.exe",
 			"cStandard": "gnu99",
 			"cppStandard": "gnu++11",
 			"intelliSenseMode": "windows-clang-x86"
