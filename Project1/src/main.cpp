@@ -32,10 +32,10 @@ float gearRadius = 0.01375; //m
 bool prismaticHomed = false;
 
 //rotary motor
-motor RotaryMotor = motor(PORT2, false); 
+motor RotaryMotor = motor(PORT2, true); 
 bumper RotaryBumper = bumper(Brain.ThreeWirePort.B);
 float rotAngDisp = 0.0;
-float rotMaxAngDisp = 0.0;
+float rotMaxAngDisp = 350; //placeholder
 bool rotaryHomed = false;
 
 //pointer lore
@@ -74,7 +74,8 @@ int main() {
     RotaryMotor.setVelocity(50, percent);
     PrismaticMotor.setVelocity(50, percent);
 
-    //RotaryMotor.setPosition(90, degrees);
+    //homing initial conditions 
+    RotaryMotor.setPosition(10, degrees);
     PrismaticMotor.setPosition(10, degrees);
 
     //main loop
@@ -90,7 +91,15 @@ int main() {
             }
         }
         else { //once homing flag is up, give us control 
-
+            if (Controller.ButtonR1.pressing() && !(PrismaticBumper.pressing()){
+                PrismaticMotor.spin(vex::forward);
+            }
+            else if (Controller.ButtonR2.pressing() && rotAngDisp < rotMaxAngDisp)){
+                PrismaticMotor.spin(reverse);
+            }
+            else {
+                PrismaticMotor.stop();
+            }
         }
 
         //prismatic controls 
