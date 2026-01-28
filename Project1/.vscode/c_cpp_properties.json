@@ -13,7 +13,8 @@
                 "C:/Program Files/VEX Robotics/VEXcode EXP/resources/sdk/vexexp/gcc/include/c++/7.3.1",
                 "C:/Program Files/VEX Robotics/VEXcode EXP/resources/sdk/vexexp/clang/7.0.0/include",
                 "C:/Program Files/VEX Robotics/VEXcode EXP/resources/sdk/vexexp/gcc/include/c++/7.3.1/arm-none-eabi/bits",
-                "C:/Program Files/VEX Robotics/VEXcode EXP/resources/sdk/vexexp/gcc/include/c++/7.3.1/arm-none-eabi"
+                "C:/Program Files/VEX Robotics/VEXcode EXP/resources/sdk/vexexp/gcc/include/c++/7.3.1/arm-none-eabi",
+                "C:/Program Files/VEX Robotics/VEXcode EXP/resources/toolchain/vexexp/win32/tools/bin"
 
             ],
             "defines": [],
