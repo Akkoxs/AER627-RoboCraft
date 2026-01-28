@@ -2,5 +2,7 @@
 	"C_Cpp.default.systemIncludePath": [
 		"${config:vexrobotics.vexcode.Cpp.Sdk.Home}\\EXP\\EXP_20240802_15_00_00\\vexexp\\gcc\\include\\sys"
 	],
-	"C_Cpp.default.compilerPath": "C:/msys64-x86/ucrt64/bin/g++.exe"
+	"C_Cpp.default.compilerPath": "",
+	"C_Cpp.default.includePath": [],
+	"C_Cpp.default.intelliSenseMode": "gcc-arm"
 }

@@ -11,11 +11,9 @@
 //Prismatic Joint - L1 = FWD L2 = BACKWD
 //Rotary Joint - R1 = CW R2 = CCW
 
-#include <iostream>
 #include "vex.h"
 
 using namespace vex;
-using namespace std; 
 
 //general
 brain Brain;
@@ -91,10 +89,10 @@ int main() {
             }
         }
         else { //once homing flag is up, give us control 
-            if (Controller.ButtonR1.pressing() && !(PrismaticBumper.pressing()){
+            if (Controller.ButtonR1.pressing() && !(PrismaticBumper.pressing())){
                 PrismaticMotor.spin(vex::forward);
             }
-            else if (Controller.ButtonR2.pressing() && rotAngDisp < rotMaxAngDisp)){
+            else if (Controller.ButtonR2.pressing() && rotAngDisp < rotMaxAngDisp){
                 PrismaticMotor.spin(reverse);
             }
             else {
