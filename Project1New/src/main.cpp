@@ -69,7 +69,7 @@ static void print_pose(vex_apriltag_pose *the_pose) {
 }
 
 //jenright april tag capture method, copied from template project 
-int AprilTagCapture(){
+int AprilTagCapture(){  
     while (true) {
 
         ai.takeSnapshot(aivision::ALL_TAGS);
@@ -80,7 +80,7 @@ int AprilTagCapture(){
         if (ai.objectCount > 0) {
             vex_apriltag_pose my_pose;
 
-            //using tag size A by default 
+            //using tag size A & calib1 params by default 
             int ret = calculate_tag_pose(
                 &ai.objects[0],
                 &calib1,
@@ -161,13 +161,6 @@ int main() {
             else {
                 RotaryMotor.stop();
             }
-            // //backlash compensation
-            // if(rotAngDisp > 180){
-            //     backLashComp = -2.0;
-            // }
-            // else {
-            //     backLashComp = 2.0;
-            // }
         }
 
         //prismatic controls 
@@ -206,11 +199,9 @@ int main() {
             Brain.Screen.printAt(90, 70, "        ");
         }
 
-        
+        //displayed position calculations 
         rotAngDisp = abs(RotaryMotor.position(degrees)*(N_small/N_large)*(N_large/N_large));
         prisDisp = (PrismaticMotor.position(degrees)*gearRadius*(rads2Deg));
-
-        //print current values
         Brain.Screen.printAt(20, 55, "%3.0f deg", rotAngDisp);
         Brain.Screen.printAt(90, 55, "%2.0f mm", prisDisp*1000);
 

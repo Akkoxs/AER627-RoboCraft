@@ -1,0 +1,19 @@
+{
+	"extension": {
+		"version": "0.8.2026011200",
+		"json": 2
+	},
+	"project": {
+		"name": "Project2",
+		"description": "Block stacking robot by Rochelle & Kai",
+		"creationDate": "1/29/2026, 5:19:46 PM",
+		"platform": "EXP",
+		"language": "cpp",
+		"slot": 1,
+		"sdkVersion": "EXP_20240802_15_00_00",
+		"cpp": {
+			"includePath": [],
+			"printf_float": true
+		}
+	}
+}
