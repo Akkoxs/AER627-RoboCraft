@@ -12,6 +12,7 @@
 //Rotary Joint - R1 = CW R2 = CCW
 
 #include "vex.h"
+//#include "vex_apriltag.h"
 
 using namespace vex;
 
@@ -35,6 +36,9 @@ bumper RotaryBumper = bumper(Brain.ThreeWirePort.B);
 float rotAngDisp = 0.0;
 float rotMaxAngDisp = 350; //placeholder
 bool rotaryHomed = false;
+float N_small = 48.0;
+float N_large = 60.0;
+float backLashComp = 0; //-2.0; //degrees due to play in arm
 
 //pointer lore
 //here, we are passing in the actual memory location of the args Motor and homingFlag, they are not local to this method, this will modify what you pass in.
@@ -69,10 +73,10 @@ int main() {
     RotaryMotor.setStopping(hold);
 
     //speed of motors
-    RotaryMotor.setVelocity(50, percent);
-    PrismaticMotor.setVelocity(50, percent);
+    RotaryMotor.setVelocity(45, percent);
+    PrismaticMotor.setVelocity(25, percent);
 
-    //homing initial conditions 
+    //homing initial conditions, forced to start homing. 
     RotaryMotor.setPosition(10, degrees);
     PrismaticMotor.setPosition(10, degrees);
 
@@ -85,19 +89,26 @@ int main() {
                 ZeroMotor(RotaryMotor, rotaryHomed);
             }
             else{
-                RotaryMotor.spin(reverse);
+                RotaryMotor.spin(vex::forward); //this is actually the reverse homing motion bc the motor is flipped. 
             }
         }
         else { //once homing flag is up, give us control 
-            if (Controller.ButtonR1.pressing() && !(PrismaticBumper.pressing())){
-                PrismaticMotor.spin(vex::forward);
+            if (Controller.ButtonR1.pressing() && !(RotaryBumper.pressing())){
+                RotaryMotor.spin(vex::forward);
             }
             else if (Controller.ButtonR2.pressing() && rotAngDisp < rotMaxAngDisp){
-                PrismaticMotor.spin(reverse);
+                RotaryMotor.spin(reverse);
             }
             else {
-                PrismaticMotor.stop();
+                RotaryMotor.stop();
             }
+            // //backlash compensation
+            // if(rotAngDisp > 180){
+            //     backLashComp = -2.0;
+            // }
+            // else {
+            //     backLashComp = 2.0;
+            // }
         }
 
         //prismatic controls 
@@ -137,11 +148,11 @@ int main() {
         }
 
         
-        //ang caluclation HERE
+        rotAngDisp = abs(RotaryMotor.position(degrees)*(N_small/N_large)*(N_large/N_large) + backLashComp);
         prisDisp = (PrismaticMotor.position(degrees)*gearRadius*(rads2Deg));
 
         //print current values
-        Brain.Screen.printAt(20, 55, "%.3f deg", rotAngDisp);
+        Brain.Screen.printAt(20, 55, "%3.0f deg", rotAngDisp);
         Brain.Screen.printAt(90, 55, "%.3f m", prisDisp);
 
         wait(20, msec);
