@@ -12,7 +12,7 @@
 //Rotary Joint - R1 = CW R2 = CCW
 
 #include "vex.h"
-//#include "vex_apriltag.h"
+#include "vex_apriltag.h"
 
 using namespace vex;
 
@@ -21,6 +21,17 @@ brain Brain;
 controller Controller = controller();
 float pi = 3.14159265358979323846264; 
 float rads2Deg = pi/180;
+
+//AVS 
+//Calib1 = 20pics 
+//Calib2 = 30pics
+aivision ai(PORT3, aivision::ALL_TAGS);
+avs_calibration calib1 = {.focal_length={218.341554, 218.666466}, .principal_point = {165.629286, 132.445691}, .image_size = {240, 320}};
+avs_calibration calib2 = {.focal_length={216.034167, 215.967106}, .principal_point = {165.998499, 133.968668}, .image_size = {240, 320}};
+static const double tag_size_A = 0.045; //m
+static const double tag_size_B = 0.022; //m
+static const double tag_size_C = 0.016; //m
+static const double tag_size_D = 0.010; //m
 
 //Prismatic motor 
 motor PrismaticMotor = motor(PORT1, false); 
@@ -38,7 +49,7 @@ float rotMaxAngDisp = 350; //placeholder
 bool rotaryHomed = false;
 float N_small = 48.0;
 float N_large = 60.0;
-float backLashComp = 0; //-2.0; //degrees due to play in arm
+//float backLashComp = 2.0; //degrees due to play in arm
 
 //pointer lore
 //here, we are passing in the actual memory location of the args Motor and homingFlag, they are not local to this method, this will modify what you pass in.
@@ -48,7 +59,52 @@ void ZeroMotor(motor& Motor, bool& homingFlag){
     homingFlag = true;
     }
 
+// jenright print_pose method 
+static void print_pose(vex_apriltag_pose *the_pose) {
+    printf("Tag ID: %d\n", the_pose->id);
+    printf("Translation: X:%lf Y:%lf Z:%lf\n", the_pose->t[0], the_pose->t[1], the_pose->t[2]);
+    printf("X Axis: [%lf, %lf, %lf]\n", the_pose->R[0][0], the_pose->R[0][1], the_pose->R[0][2]);
+    printf("Y Axis: [%lf, %lf, %lf]\n", the_pose->R[1][0], the_pose->R[1][1], the_pose->R[1][2]);
+    printf("Z Axis: [%lf, %lf, %lf]\n", the_pose->R[2][0], the_pose->R[2][1], the_pose->R[2][2]);
+}
+
+//jenright april tag capture method, copied from template project 
+int AprilTagCapture(){
+    while (true) {
+
+        ai.takeSnapshot(aivision::ALL_TAGS);
+        Brain.Screen.setFont(mono12);
+        Brain.Screen.printAt(45, 90, "                       ");
+        Brain.Screen.printAt(45, 90, "Tags Found: %d\n", ai.objectCount);
+
+        if (ai.objectCount > 0) {
+            vex_apriltag_pose my_pose;
+
+            //using tag size A by default 
+            int ret = calculate_tag_pose(
+                &ai.objects[0],
+                &calib1,
+                tag_size_A,
+                &my_pose
+            );
+
+            if (ret == 0) {
+                print_pose(&my_pose);
+            } 
+            else {
+                printf("Unable to compute homography\n");
+            }
+        }
+
+        this_thread::sleep_for(1000);
+    }
+
+    return 0;
+}
+
+
 int main() {
+    
     //Setup brain screen
     Brain.Screen.clearScreen();
     Brain.Screen.setFont(mono12);
@@ -59,6 +115,9 @@ int main() {
 
     Brain.Screen.printAt(20, 45, "ROTARY");
     Brain.Screen.printAt(90, 45, "PRISMATIC");
+
+    //start april tag recognition thread
+    thread apriltagThread(AprilTagCapture);
 
     //register method calls to buttons 
     //learned something new:
@@ -148,12 +207,12 @@ int main() {
         }
 
         
-        rotAngDisp = abs(RotaryMotor.position(degrees)*(N_small/N_large)*(N_large/N_large) + backLashComp);
+        rotAngDisp = abs(RotaryMotor.position(degrees)*(N_small/N_large)*(N_large/N_large));
         prisDisp = (PrismaticMotor.position(degrees)*gearRadius*(rads2Deg));
 
         //print current values
         Brain.Screen.printAt(20, 55, "%3.0f deg", rotAngDisp);
-        Brain.Screen.printAt(90, 55, "%.3f m", prisDisp);
+        Brain.Screen.printAt(90, 55, "%2.0f mm", prisDisp*1000);
 
         wait(20, msec);
     }
