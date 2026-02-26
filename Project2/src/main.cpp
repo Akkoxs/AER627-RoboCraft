@@ -58,7 +58,7 @@ bool newBlock;
 //optical sensor
 optical Optical = optical(PORT8);
 color detectedColor;
-int detectionRange = 100; //placeholder
+int detectionRange = 100; 
 //Optical.objectLost(func);
 
 //gantry
@@ -73,7 +73,7 @@ motor verticalMotor = motor(PORT10, false);
 bool verticalHomingFlag = false;
 float currentVerticalPos; 
 float gearRadius = 0.01375; //m
-float pickupPos_vertical = 58; //mm
+float pickupPos_vertical = 64; //mm
 float verticalPosMax = 67; //mm
 float targetHeight;
 
@@ -81,7 +81,7 @@ motor clawMotor = motor(PORT7, false);
 bool clawHomingFlag = false;
 float currentClawPos;
 float clawDefaultPos = 30;
-float clawClampPos = 66; //deg
+float clawClampPos = 63; //deg
 
 //hopper
 motor hopMotor = motor(PORT9, false);
@@ -96,7 +96,7 @@ bool blockInClaws;
 bool blockFailedGrab;
 int redStackAmt = 0;
 int blueStackAmt = 0;
-float blockDim = 29; //mm
+float blockDim = 30; //mm
 float blockBufferSpace = 2; //mm
 float redZonePos = 480; //mm
 float blueZonePos = 30; //mm
@@ -226,14 +226,14 @@ void StartUp(){
     //set velocities
     horizontalMotor.setVelocity(15, percent);
     verticalMotor.setVelocity(10, percent);
-    clawMotor.setVelocity(30, percent);
-    hopMotor.setVelocity(20, percent);
+    clawMotor.setVelocity(65, percent);
+    hopMotor.setVelocity(30, percent);
 
     //by design should start at 0 deg position.
     hopMotor.setPosition(0, degrees);
 
     //led power 
-    Optical.setLightPower(25, percent);
+    Optical.setLightPower(50, percent);
 
     //home motors 
     ZeroMotor(horizontalMotor, horizontalHomingFlag, vex::fwd);
@@ -254,7 +254,7 @@ void StartUp(){
 
 void DispenseBlock(){
 
-    if(blocksDispensed >= 3){
+    if(blocksDispensed >= 6){
         currentState = END;
         return;
     }
@@ -270,18 +270,18 @@ void DispenseBlock(){
             completedStep = true;
         }
 
-        if(hopMotor.current(percent) > motorStallCurrent){
-            if(completedStep){
-                // stalling on next block, just back off
-                hopMotor.spinFor(vex::reverse, 100, degrees);
-                break;
-            }
-            else{
-                // stalling on current block, do full correction
-                hopMotor.spinFor(vex::reverse, 100, degrees);
-                hopMotor.spinFor(vex::forward, 100, degrees);
-            }
-        }
+        // if(hopMotor.current(percent) > motorStallCurrent){
+        //     if(completedStep){
+        //         // stalling on next block, just back off
+        //         hopMotor.spinFor(vex::reverse, 100, degrees);
+        //         break;
+        //     }
+        //     else{
+        //         // stalling on current block, do full correction
+        //         hopMotor.spinFor(vex::reverse, 100, degrees);
+        //         hopMotor.spinFor(vex::forward, 100, degrees);
+        //     }
+        //}
         hopMotor.spin(vex::forward);
     }
     hopMotor.stop();
@@ -329,7 +329,7 @@ void Grab(){
         clawMotor.spin(vex::fwd);
     }
     clawMotor.stop();
-    Optical.setLight(ledState::on);
+    //Optical.setLight(ledState::on);
 
     while(Optical.color() != red && Optical.color() != blue){
         detectedColor = Optical.color();
@@ -356,7 +356,7 @@ void TraverseToRedZone(){
         horizontalMotor.spin(vex::reverse); // away from home
     }
     horizontalMotor.stop();
-    Optical.setLight(ledState::off);
+    //Optical.setLight(ledState::off);
     AtRedZone();
 }
 
@@ -366,7 +366,7 @@ void TraverseToBlueZone(){
         horizontalMotor.spin(vex::fwd);
     }
     horizontalMotor.stop();
-    Optical.setLight(ledState::off);
+    //Optical.setLight(ledState::off);
     AtBlueZone();
 }
 
@@ -455,26 +455,28 @@ void EvaluateState(State state){
             currentState = DESCEND_TO_STACK;
             break;
 
-        case DESCEND_TO_STACK:
+        case DESCEND_TO_STACK: 
         if(atRedStack){
             if (redStackAmt == 0){
                 targetHeight = pickupPos_vertical;
+                redStackAmt++;
             }
             else{
-                targetHeight = redStackAmt * (blockDim + blockBufferSpace);
+                targetHeight = pickupPos_vertical - redStackAmt * (blockDim);
+                redStackAmt++;
             }
             DescendToStack(targetHeight);
-            redStackAmt++;
         } 
         else if(atBlueStack){
             if (blueStackAmt == 0){
                 targetHeight = pickupPos_vertical;
+                blueStackAmt++;
             }
             else{
-                targetHeight = blueStackAmt * (blockDim + blockBufferSpace);
+                targetHeight = pickupPos_vertical - blueStackAmt * (blockDim);
+                blueStackAmt++;
             }
             DescendToStack(targetHeight);
-            blueStackAmt++;
         }
         currentState = RELEASE;
         break;
@@ -482,7 +484,7 @@ void EvaluateState(State state){
         case RELEASE: 
             Release();
             
-            if (blueStackAmt + redStackAmt >= 3){
+            if (blueStackAmt + redStackAmt >= 6){
                 currentState = END;
             }
             
