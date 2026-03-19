@@ -4,12 +4,12 @@
 		"json": 2
 	},
 	"project": {
-		"name": "Project3",
-		"description": "Pen writing robot for AER627 by Rochelle Suarez-Tapanes and Kai Stewart",
-		"creationDate": "3/2/2026, 6:49:56 PM",
+		"name": "Project3New",
+		"description": "",
+		"creationDate": "3/19/2026, 5:18:38 PM",
 		"platform": "EXP",
 		"language": "cpp",
-		"slot": 3,
+		"slot": 1,
 		"sdkVersion": "EXP_20240802_15_00_00",
 		"cpp": {
 			"includePath": [],
