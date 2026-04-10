@@ -10,7 +10,7 @@ class obstacle {
     obstacle(double r); //This defines a circular object
  
     //Properties
-    vex_apriltag_pose tag; // This is the pose relative to the origin.
+    vex_apriltag_map_pose tag; // This is the pose relative to the origin.
     double size[2];
 
     //Methods

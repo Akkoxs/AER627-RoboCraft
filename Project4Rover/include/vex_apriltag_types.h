@@ -12,8 +12,8 @@
   the other code.
 
 */
-#ifndef __vex_apriltag
-#define __vex_apriltag
+#ifndef __vex_apriltag_types //changed
+#define __vex_apriltag_types //changed 
 
 #pragma once
 
@@ -30,17 +30,14 @@
 typedef struct {
     Pose3D pose;
     int id;
-} vex_apriltag_pose;
+} vex_apriltag_map_pose;
 
 
 
-typedef struct {
-    double focal_length[2];
-    double principal_point[2];
-    double image_size[2];
-} avs_calibration;
-
-
-
+// typedef struct {
+//     double focal_length[2];
+//     double principal_point[2];
+//     double image_size[2];
+// } avs_calibration;
 
 #endif
